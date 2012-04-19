@@ -28,6 +28,7 @@ my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\x40","system.img",
 		"\x00\x00\x00\x50","userdata.img",
 		"\x00\x00\x00\x60","recovery.img",
+		"\x00\x00\x00\xB0","FactoryImage.img",
 		"\x00\x00\x00\xC0","file11.mbn",
 		"\x00\x00\x00\xD0","amss.mbn",
 		"\x00\x00\x00\xE0","file05.mbn",
@@ -47,6 +48,7 @@ my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\xFD","file16.mbn",
 		"\x00\x00\x00\xFE","file18.mbn",
 		"\x00\x00\x00\xFF","file21.mbn",
+		"\x00\x00\x10\xF6","file22.txt",
 	);
 
 my $unknown_count=0;

@@ -1,0 +1,18 @@
+1. First 92 bytes are 0x00
+2. Each file are started with 55AA 5AA5
+3. Then 4 bytes for Packet(header) Length
+4. Then 4 bytes for 0x00000001
+5. Then 8 bytes for Hardware ID
+6. Then 4 bytes for File Sequence (*)
+7. Then 4 bytes for Data file length
+8. Then 16 byts for File Date
+9. Then 16 byts for File time
+10.Then 16 byts for The word Input ?
+11.Then 16 byts for Blank with 0x00
+12.Then 2 bytes for the Checksum of the header
+13.Then 2 bytes for always 0x1000 ?
+14.Then 2 bytes for Blank [step 2-14 consumes 98bytes)
+15.Then ($headerLength-98) bytes for file checksum
+16.Then data file length bytes for files.
+17.Then padding if have
+18.Then repeat 2 to 17
