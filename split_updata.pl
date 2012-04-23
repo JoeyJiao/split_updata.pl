@@ -21,6 +21,7 @@
  
 use strict;
 use warnings;
+#use String::CRC32;
  
 my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\x20","file25.mbn",
@@ -32,7 +33,7 @@ my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\xC0","file11.mbn",
 		"\x00\x00\x00\xD0","amss.mbn",
 		"\x00\x00\x00\xE0","oemsbl.mbn",
-		"\x00\x00\x00\xF0","file04.mbn",
+		"\x00\x00\x00\xF0","file04.mbn", #oemsblhd.mbn?
 		"\x00\x00\x00\xF1","file07.mbn",
 		"\x00\x00\x00\xF2","splash.raw565",
 		"\x00\x00\x00\xF3","file01.mbn",
@@ -62,14 +63,20 @@ use constant UINT_SIZE => 4;
 # If a filename wasn't specified on the commmand line then
 # assume the file to be unpacked is called "UPDATA.APP". 
 my $FILENAME = undef;
-if ($#ARGV == -1) {
-	$FILENAME = "UPDATA.APP";
-}
-else {
+if (@ARGV) {
 	$FILENAME = $ARGV[0];
 }
+else {
+	my @files = `ls`;
+	$FILENAME = $ARGV[0];
+	foreach (@files){
+		if(/updata.app/i){
+			$FILENAME=$_;
+		}
+	}
+}
  
-open(INFILE, $FILENAME) or open(INFILE, "updata.app") or die "Cannot open $FILENAME: $!\n";
+open(INFILE, $FILENAME) or die "Cannot open $FILENAME: $!\n";
 binmode INFILE;
  
 # Skip the first 92 bytes, they're blank.
@@ -83,6 +90,7 @@ mkdir $BASEPATH;
 while (!eof(INFILE))
 {
 	$fileLoc=&find_next_file($fileLoc);
+	#print "fileLoc=$fileLoc\n";
 	seek(INFILE, $fileLoc, 0);
 	$fileLoc=&dump_file();
 }
@@ -124,6 +132,8 @@ sub dump_file {
     read(INFILE, $buffer, 4);         # Always 1
     read(INFILE, $buffer, 8);         # Hardware ID
     read(INFILE, $fileSeq, 4);        # File Sequence
+	#my ($temp)=unpack("V",$fileSeq);
+	#print "fileSeq=$temp\n";
     if (exists($fileHash{$fileSeq})) {
 	$outfilename=$fileHash{$fileSeq};
     } else {
@@ -153,6 +163,10 @@ sub dump_file {
     close OUTFILE;
 
     $calculatedcrc=`./crc $BASEPATH$outfilename`;
+	#open(SOMEFILE,"$BASEPATH$outfilename");
+    #$calculatedcrc=crc32(*SOMEFILE);
+	#close(SOMEFILE);
+	#print "crc32=$calculatedcrc\n";
     chomp($calculatedcrc);
 
     print STDOUT "Extracted $outfilename";
