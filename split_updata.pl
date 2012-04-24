@@ -21,6 +21,8 @@
  
 use strict;
 use warnings;
+
+my $CRC_CHECK= -e "crc" && -x _;
  
 my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\x20","file25.mbn",
@@ -161,11 +163,13 @@ sub dump_file {
     print OUTFILE $buffer;
     close OUTFILE;
 
-    $calculatedcrc=`./crc $BASEPATH$outfilename`;
-    chomp($calculatedcrc);
+    $calculatedcrc=`./crc $BASEPATH$outfilename` if $CRC_CHECK;
+    chomp($calculatedcrc) if $CRC_CHECK;
 
     print STDOUT "Extracted $outfilename";
-    if ($calculatedcrc eq $sourcecrc)
+    print "\n" if !$CRC_CHECK;
+    if($CRC_CHECK){
+    	if ($calculatedcrc eq $sourcecrc)
 	{
 		print " - CRC Okay\n";
 	}
@@ -173,6 +177,7 @@ sub dump_file {
 	{
 		print " - ERROR: CRC did not match\n";
 	}
+    }
     
     # Ensure we finish on a 4 byte boundary alignment.
     my $remainder = UINT_SIZE - (tell(INFILE) % UINT_SIZE);
