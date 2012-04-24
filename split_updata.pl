@@ -21,7 +21,6 @@
  
 use strict;
 use warnings;
-#use String::CRC32;
  
 my %fileHash=(	"\x00\x00\x00\x10","appsboot.mbn",
 		"\x00\x00\x00\x20","file25.mbn",
@@ -61,7 +60,7 @@ $|++;
 use constant UINT_SIZE => 4;
  
 # If a filename wasn't specified on the commmand line then
-# assume the file to be unpacked is called "UPDATA.APP". 
+# assume the file to be unpacked is under current directory. 
 my $FILENAME = undef;
 if (@ARGV) {
 	$FILENAME = $ARGV[0];
@@ -90,7 +89,7 @@ mkdir $BASEPATH;
 while (!eof(INFILE))
 {
 	$fileLoc=&find_next_file($fileLoc);
-	#print "fileLoc=$fileLoc\n";
+	#printf "fileLoc=%x\n",$fileLoc;
 	seek(INFILE, $fileLoc, 0);
 	$fileLoc=&dump_file();
 }
@@ -163,10 +162,6 @@ sub dump_file {
     close OUTFILE;
 
     $calculatedcrc=`./crc $BASEPATH$outfilename`;
-	#open(SOMEFILE,"$BASEPATH$outfilename");
-    #$calculatedcrc=crc32(*SOMEFILE);
-	#close(SOMEFILE);
-	#print "crc32=$calculatedcrc\n";
     chomp($calculatedcrc);
 
     print STDOUT "Extracted $outfilename";
