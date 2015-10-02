@@ -71,7 +71,7 @@ else {
 	my @files = `ls`;
 	$FILENAME = $ARGV[0];
 	foreach (@files){
-		if(/updata.app/i){
+		if(/update.app/i){
 			$FILENAME=$_;
 		}
 	}
